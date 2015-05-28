@@ -20,22 +20,23 @@ namespace Test_Native_And_COM_Interoperability
         //ref http://stackoverflow.com/questions/588817/c-sharp-memory-address-and-variable
         static void Main(string[] args)
         {
-            int i;
-            object o = new Blittable();
-            unsafe
-            {
-                int* ptr = &i;
-                IntPtr addr = (IntPtr)ptr;
+            //int i;
+            //object o = new Blittable();
+            //unsafe
+            //{
+            //    int* ptr = &i;
+            //    IntPtr addr = (IntPtr)ptr;
 
-                Console.WriteLine(addr.ToString("x"));
+            //    Console.WriteLine(addr.ToString("x"));
 
-                GCHandle h = GCHandle.Alloc(o, GCHandleType.Pinned);
-                addr = h.AddrOfPinnedObject();
-                Console.WriteLine(addr.ToString("x"));
+            //    GCHandle h = GCHandle.Alloc(o, GCHandleType.Pinned);
+            //    addr = h.AddrOfPinnedObject();
+            //    Console.WriteLine(addr.ToString("x"));
 
-                h.Free();
-            }
-            using (ShareMem sm = new ShareMem("MyShare", false, 1000))
+            //    h.Free();
+            //}
+            //這邊要開另一支程序執行並這邊的改成true執行才會去抓共享的記憶體資料
+            using (ShareMem sm = new ShareMem("MyShare", false, 1000))//using (ShareMem sm = new ShareMem("MyShare", true, 1000))
             {
                 IntPtr root = sm.Root;
                 unsafe
