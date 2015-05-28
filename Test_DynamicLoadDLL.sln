@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlugIn1", "PlugIn1\PlugIn1.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlugIn2", "PlugIn2\PlugIn2.csproj", "{3358DD1C-62AE-4150-96BF-DDB1FF058CD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_Native_And_COM_Interoperability", "Test_Native_And_COM_Interoperability\Test_Native_And_COM_Interoperability.csproj", "{6DB5ECD4-76A6-4C06-8A08-1097B79C6378}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3358DD1C-62AE-4150-96BF-DDB1FF058CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3358DD1C-62AE-4150-96BF-DDB1FF058CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3358DD1C-62AE-4150-96BF-DDB1FF058CD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DB5ECD4-76A6-4C06-8A08-1097B79C6378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DB5ECD4-76A6-4C06-8A08-1097B79C6378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DB5ECD4-76A6-4C06-8A08-1097B79C6378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DB5ECD4-76A6-4C06-8A08-1097B79C6378}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
