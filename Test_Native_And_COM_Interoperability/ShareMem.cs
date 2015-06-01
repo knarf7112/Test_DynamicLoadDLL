@@ -60,10 +60,9 @@ namespace Test_Native_And_COM_Interoperability
 
             if (this.fileHandle == IntPtr.Zero)
             {
-                int i = Marshal.GetLastWin32Error();
+                int i = Marshal.GetLastWin32Error();//當SetLastError=true有設定,則可取得DLL拋出的錯誤代碼
                 throw new Win32Exception(i);
             }
-                
 
             this.fileMap = MapViewOfFile(this.fileHandle, FileRights.ReadWrite, 0, 0, 0);
             if (fileMap == IntPtr.Zero)

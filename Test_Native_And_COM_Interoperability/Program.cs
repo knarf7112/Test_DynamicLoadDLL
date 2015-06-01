@@ -7,19 +7,67 @@ using System.Text.RegularExpressions;
 
 namespace Test_Native_And_COM_Interoperability
 {
-    [StructLayout(LayoutKind.Sequential)]
-    class Blittable
-    {
-        int x;
-    }
-
     class Program
     {
+        #region 8.
+        static void Main(string[] args)
+        {
+            RegularExpressionTest();
+        }
+        #endregion
+
+        #region 7.Mapping a Struct to Unmanaged Memory
+
+        [StructLayout(LayoutKind.Sequential)]
+        unsafe struct MyShareData
+        {
+            public int Value;
+            public char Letter;
+            public fixed float Numbers[50];
+        }
+        struct qq
+        {
+            public int i { get; set; }
+            public byte b { get; set; }
+            public bool boo;
+        }
+        static unsafe void Main7(string[] args)
+        {
+            qq q1 = new qq(){i = 100,b = 20, boo = true};
+            Console.WriteLine(sizeof (MyShareData));    //208//1 int = 4 byte, 1 float = 4 byte, 1 char = 2 byte => 4(float) * 50(定義的大小) + 4(int) * 1 +  2(char) * 1 = 206 bytes => 因為一定為4byte的倍數所以char會變成4 byte => 208 bytes
+            Console.WriteLine("bool:" + sizeof(bool));  //1 byte
+            Console.WriteLine("byte:" + sizeof(byte));  //1 byte
+            Console.WriteLine("char:" + sizeof(char));  //2 bytes
+            Console.WriteLine("int:" + sizeof(int));    //4 bytes
+            Console.WriteLine("Int32:" + sizeof(Int32));//4 bytes
+            Console.WriteLine("long:" + sizeof(long));  //8 bytes
+            Console.WriteLine("Int64:" + sizeof(Int64));//8 bytes
+            Console.WriteLine("qq:" + sizeof(qq));      //4 + 4(原始為1 byte,但被進位成4 bytes) + 4(原始為1 byte,但被進位成4 bytes)
+            
+            MyShareData my;
+            MyShareData* myPointer = &my;
+            myPointer->Value = 123;
+            var i = stackalloc MyShareData[0];
+            IntPtr p = (IntPtr)myPointer;
+            Console.WriteLine(p.ToString("x"));
+            Console.WriteLine("Data:" + Marshal.SizeOf(q1));
+            Console.ReadKey();
+        }
+        #endregion
+
         #region 6.Shared Memory
         //Ref memory address https://msdn.microsoft.com/en-US/library/zcbcf4ta(v=vs.80).aspx
         //ref http://stackoverflow.com/questions/588817/c-sharp-memory-address-and-variable
-        static void Main(string[] args)
+        static void Main6(string[] args)
         {
+            unsafe
+            {
+                IntPtr p1 = Marshal.AllocCoTaskMem(500);
+                Marshal.FreeCoTaskMem(p1);
+                IntPtr p2 = Marshal.AllocHGlobal(50);
+                Marshal.FreeHGlobal(p2);
+                var i = p1;
+            }
             //int i;
             //object o = new Blittable();
             //unsafe
@@ -87,7 +135,6 @@ namespace Test_Native_And_COM_Interoperability
             public byte Note;
             [FieldOffset(2)]
             public byte Velocity;
-
         }
         #endregion
 
@@ -147,20 +194,23 @@ namespace Test_Native_And_COM_Interoperability
 
         #region Test Regular Expression
 
-        void RegularExpressionTest()
+        static void RegularExpressionTest()
         {
-            string ss = "awqe MESSAGE_TYPE:0121  eqwewq";
-            string mathstr = Regex.Match(ss, "MESSAGE_TYPE:[0-9]{3}1").Value;
-            bool check = Regex.IsMatch(ss, "MESSAGE_TYPE:[0-9]{3}1");
+            string ex1 = "{\"MESSAGE_TYPE\":\"0420\",\"ICC_NO\":\"6617151008000010\",\"PROCESSING_CODE\":\"990174\",\"TRANS_DATETIME\":\"0528163756\",\"STAN\":\"043008\",\"RRN\":\"513516043008\",\"RC\":\"00\",\"BANK_CODE\":\"0806\",\"AMOUNT\":\"00000500\",\"STORE_NO\":\"00012345\",\"POS_NO\":\"00000003\",\"MERCHANT_NO\":\"000000012345678\",\"ICC_info\":{\"BIT_MAP\":null,\"STORE_NO\":\"00012345\",\"REG_ID\":\"003\",\"TX_DATETIME\":\"20150528163756\",\"ICC_NO\":\"6617151008000010\",\"AMT\":\"00000500\",\"NECM_ID\":\"860434082AE62080    \",\"RETURN_CODE\":\"00000508\"},\"ORI_dtat\":{\"MESSAGE_TYPE\":\"0100\",\"TRANSACTION_DATE\":\"0528163756\",\"STAN\":\"043007\",\"STORE_NO\":\"00012345\",\"RRN\":\"513516043007\"}}";
+
+            string matchStr = Regex.Match(ex1,  "/^{\"MESSAGE_TYPE\":\"[0-9]{3}0/ig").Value;
             //new string instead old's
-            string newStr = Regex.Replace(ss, "MESSAGE_TYPE:[0-9]{3}1", new MatchEvaluator((Match s2) =>
+            string newStr = Regex.Replace(ex1, "^{\"MESSAGE_TYPE\":\"[0-9]{3}0", new MatchEvaluator((Match s2) =>
             {
+                Console.BackgroundColor = ConsoleColor.Yellow;
                 Console.WriteLine(s2.Value);
-                return s2.Value.Substring(0, s2.Value.Length - 1) + "0";
+                return s2.Value.Substring(0, s2.Value.Length - 1) + "1";
             }));
-            Console.WriteLine(ss);
-            Console.WriteLine(newStr);
-            
+            Console.ResetColor();
+            Console.WriteLine("old:" + ex1);
+            Console.WriteLine("new:" + newStr);
+
+            Console.ReadKey();
         }
         #endregion
 
